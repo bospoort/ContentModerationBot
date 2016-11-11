@@ -46,7 +46,7 @@ module.exports = function(pictureUrl, callback) {
                 "ContentId": "someimage.jpg"
             },
             "WorkflowId": "default",
-            "CallBackEndpoint": "http://8bdf0e70.ngrok.io/review"
+            "CallBackEndpoint": "https://bc374597.ngrok.io"
         });
         req.end(function (res) {
              if (res.statusCode==401){
