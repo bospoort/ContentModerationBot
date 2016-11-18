@@ -3,10 +3,9 @@
 
 var unirest = require("unirest");
 var token;
-var token_expires;
 
 module.exports = function(pictureUrl, callback) {
-    var req  = unirest("PUT", "https://wb-prod-moderatorsvc.azurewebsites.net/v1/team/kiktest/moderate/images");
+    var req  = unirest("PUT", "https://westus.api.cognitive.microsoft.com/contentmoderator/review/v1.0/teams/kiktextmoderationmb/reviews");
     var auth = require('./auth.js');
 
     if (token===undefined){
@@ -46,7 +45,8 @@ module.exports = function(pictureUrl, callback) {
                 "ContentId": "someimage.jpg"
             },
             "WorkflowId": "default",
-            "CallBackEndpoint": "https://bc374597.ngrok.io"
+            //you need to install and run ngrok http <port>. Then paste url here
+            "CallBackEndpoint": "https://e4508b71.ngrok.io"
         });
         req.end(function (res) {
              if (res.statusCode==401){

@@ -22,21 +22,84 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-bot.dialog('/', function (session) {
-    var input = session.message.text;
-    var cmtext = require("./cmtext.js")
-    //urls: 
-    //racy: http://static.bikini.com/inside_4_7.jpg
-    //neutral: http://d.ibtimes.co.uk/en/full/1441242/roger-federer.jpg
+bot.dialog('/', [ 
+     function (session) { 
+         session.send("Hi, I can do moderation."); 
+         session.beginDialog('/menu'); 
+     }, 
+     function (session, results) { 
+         session.endConversation("Thank you. Bye."); 
+     } 
+]);
 
-    cmtext( input, function(err, body) {
-        if (err) {
-            console.log("Error: "+err);         
-            session.send("Oops. Something went wrong.");
-            return;
+bot.dialog('/menu', [
+    function (session) {
+        builder.Prompts.choice(session, "Choose an option:", 'Text|Picture|Video|Quit');
+    },
+    function (session, results) {
+        switch (results.response.index) {
+            case 0:
+                session.beginDialog('/text');
+                break;
+            case 1:
+                session.beginDialog('/picture');
+                break;
+            case 2:
+                session.beginDialog('/video');
+                break;
+            default:
+                session.endDialog();
+                break;
         }
-        var output = JSON.stringify(body);
-        console.log("Result: " + output);
-        session.send(output);
-    });
+    },
+    function (session) {
+        // Reload menu
+        session.replaceDialog('/menu');
+    }
+]).reloadAction('showMenu', null, { matches: /^(menu|back)/i });
+
+bot.dialog('/text', [ 
+    function (session, args) {
+        builder.Prompts.text(session, "Give me a sentence to moderate, please.");
+    },
+    function (session, results){
+        var input = session.message.text;
+        var cm = require("./cmtext.js");
+        cm( input, function(err, body) {
+            if (err) {
+                console.log("Error: "+err);         
+                session.send("Oops. Something went wrong.");
+                return;
+            }
+            var output = JSON.stringify(body);
+            console.log("Result: " + output);
+            session.endDialog(output);
+        });
+    }
+]);
+
+bot.dialog('/picture', [ 
+    function (session, args) {
+        builder.Prompts.text(session, "Give me a URL to a picture, please.");
+    },
+    function (session, results){
+        var input = session.message.text;
+        var cm = require("./cmstudio.js")
+        //racy:     http://static.bikini.com/inside_4_7.jpg
+        //neutral:  http://d.ibtimes.co.uk/en/full/1441242/roger-federer.jpg
+        cm( input, function(err, body) {
+            if (err) {
+                console.log("Error: "+err);         
+                session.send("Oops. Something went wrong.");
+                return;
+            }
+            var output = JSON.stringify(body);
+            console.log("Result: " + output);
+            session.endDialog(output);
+        });
+    }
+]);
+
+bot.dialog('/video', function (session) {
+    session.endDialog("Video mod will come soon.");
 });
