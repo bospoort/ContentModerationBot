@@ -34,7 +34,7 @@ bot.dialog('/', [
 
 bot.dialog('/menu', [
     function (session) {
-        builder.Prompts.choice(session, "Choose an option:", 'Text|Picture|Video|Quit');
+        builder.Prompts.choice(session, "Choose an option:", 'Text|Picture|Video|Review|Quit');
     },
     function (session, results) {
         switch (results.response.index) {
@@ -46,6 +46,9 @@ bot.dialog('/menu', [
                 break;
             case 2:
                 session.beginDialog('/video');
+                break;
+            case 3:
+                session.beginDialog('/review');
                 break;
             default:
                 session.endDialog();
@@ -79,6 +82,28 @@ bot.dialog('/text', [
 ]);
 
 bot.dialog('/picture', [ 
+    function (session, args) {
+        builder.Prompts.text(session, "Give me a URL to a picture, please.");
+    },
+    function (session, results){
+        var input = session.message.text;
+        var cm = require("./cmimage.js")
+        //racy:     http://static.bikini.com/inside_4_7.jpg
+        //neutral:  http://d.ibtimes.co.uk/en/full/1441242/roger-federer.jpg
+        cm( input, function(err, body) {
+            if (err) {
+                console.log("Error: "+err);         
+                session.send("Oops. Something went wrong.");
+                return;
+            }
+            var output = JSON.stringify(body);
+            console.log("Result: " + output);
+            session.endDialog(output);
+        });
+    }
+]);
+
+bot.dialog('/review', [ 
     function (session, args) {
         builder.Prompts.text(session, "Give me a URL to a picture, please.");
     },
