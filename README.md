@@ -13,12 +13,14 @@ You will need to get keys from the ContentModeration site and  provide them in t
     "ocp_key" : "ocp"
 }
 ```
-You will find the cm_id key here:
+When you go to [Cognitive Services](https://www.microsoft.com/cognitive-services/), click on the APIs dropdown and select Content Moderator under Vision, you can Get started for Free. It will ask you to sign in and to provide a team name. You will then be taken to the dashboard. 
 
-The cm
+You will find the keys when you click Settings at the top and then the API tab. Under the API, you will find the cm_id key where it says Client Id. The cm_key is under Keys. You will see it only once, so make sure you copy it. Otherwise, you'll have to create a new one. Finally, the ocp_key is all the way at the bottom in the Connectors section. You'll see it when you click Edit.  
+
+## Getting the callback
 Since the site has a callback for pictures when they are reviewed in CM studio, you can set up the end point with ngrok: 
-
+``` 
 ngrok http <port>.
-
+```
 where <port> is the port you specify in index.js line 7. 
 
