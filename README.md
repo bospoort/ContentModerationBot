@@ -18,9 +18,9 @@ When you go to [Cognitive Services](https://www.microsoft.com/cognitive-services
 You will find the keys when you click Settings at the top and then the API tab. Under the API, you will find the cm_id key where it says Client Id. The cm_key is under Keys. You will see it only once, so make sure you copy it. Otherwise, you'll have to create a new one. Finally, the ocp_key is all the way at the bottom in the Connectors section. You'll see it when you click Edit.  
 
 ## Getting the callback
-Since the site has a callback for pictures when they are reviewed in CM studio, you can set up the end point with ngrok: 
-``` 
+Content Moderator needs a callback for pictures when they are reviewed in Content Moderator studio. Since it might be hard to find your IP behind a firewall, you can set up the end point with ngrok: 
+```
 ngrok http <port>.
 ```
-where <port> is the port you specify in index.js line 7. 
+where <port> is the port you specify in index.js line 7. Alternatively, you can use requestb.in. 
 
