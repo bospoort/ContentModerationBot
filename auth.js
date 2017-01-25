@@ -3,24 +3,25 @@
 var unirest = require("unirest");
 var config = require('./config.json');
 
-module.exports = function(callback) {
-    var req = unirest("POST", "https://login.microsoftonline.com/contentmoderatorprod.onmicrosoft.com/oauth2/token");
+module.exports.token = null;
 
-    req.headers({
+module.exports.refreshToken = function() {
+    var req = unirest.post("https://login.microsoftonline.com/contentmoderatorprod.onmicrosoft.com/oauth2/token")
+    .headers({
         "content-type": "application/x-www-form-urlencoded"
-    });
-
-    req.form({
+    })
+    .form({
         "resource": "https://api.contentmoderator.cognitive.microsoft.com/review",
         "client_id": config.cm_id,
         "client_secret": config.cm_key,
         "grant_type": "client_credentials"
-    });
-
-    req.end(function (res){
+    })
+    .end(function (res){
         if (res.error){
-            return callback(res.error);
+            console.log("Refreshing token error: "+res.error);
+        }else{
+            module.exports.token = 'Bearer ' + res.body.access_token;
         }
-        return callback(null, res.body);
     });
 };
+
