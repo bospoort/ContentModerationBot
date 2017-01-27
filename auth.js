@@ -6,7 +6,7 @@ var config = require('./config.json');
 module.exports.token = null;
 
 module.exports.refreshToken = function() {
-    var req = unirest.post("https://login.microsoftonline.com/contentmoderatorprod.onmicrosoft.com/oauth2/token")
+    unirest.post("https://login.microsoftonline.com/contentmoderatorprod.onmicrosoft.com/oauth2/token")
     .headers({
         "content-type": "application/x-www-form-urlencoded"
     })

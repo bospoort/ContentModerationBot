@@ -97,8 +97,8 @@ bot.dialog('/moderatePicture', [
     function (session, results){
         var input = session.message.text;
         var cm = require("./cmimage.js");
-        //racy:     http://static.bikini.com/inside_4_7.jpg
-        //neutral:  http://d.ibtimes.co.uk/en/full/1441242/roger-federer.jpg
+        //racy:     http://static.bikini.com/inside_4_7.jpg     adult 0.465  racy   0.954
+        //neutral:  http://d.ibtimes.co.uk/en/full/1441242/roger-federer.jpg    adult 0.055 racy 0.123
         cm( input, function(err, body) {
             if (err) {
                 console.log("Error: "+err);         
