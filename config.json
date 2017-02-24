@@ -1,8 +1,8 @@
 {
-    "cm_id" : "id",
-    "cm_key" : "key", 
-    "ocp_key" : "ocpkey",
-    "url_prefix": "url/"
+    "cm_id" : "bab5e056-6cf1-4824-8be2-d0a790012d07",
+    "cm_key" : "f7e5e533685f4ccd9576114176633bdc", 
+    "ocp_key" : "d0541e5b6a7f4d25ad2047a7a6af189a",
+    "url_prefix": "https://westus.api.cognitive.microsoft.com/contentmoderator/review/v1.0/teams/butterfly/"
 }
 
  
