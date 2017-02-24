@@ -1,0 +1,10 @@
+{
+  "name": "contentmoderationbot",
+  "description": "Sample bot to work with Content Moderation",
+  "dependencies": {
+    "botbuilder": "^3.7.0",
+    "restify": "^4.3.0",
+    "unirest": "^0.5.1"
+  },
+  "engine": "node >= 0.4.1"
+}
