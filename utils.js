@@ -5,8 +5,10 @@ var azure   = require('azure-storage');
 var util    = require('util');
 var config  = require('./config.json');
 
+const imageFolder = './images/';
+
 module.exports.downLoadImage = function(url, dest, cb ){
-    var file = fs.createWriteStream(dest);
+    var file = fs.createWriteStream(imageFolder+dest);
     var request = http.get(url, function(response) {
         response.pipe(file);
         file.on('finish', function() {
@@ -20,7 +22,9 @@ module.exports.uploadImageToBlob = function(image, cb ){
     var accountName     = config.blobAccountName;
     var accountKey      = config.blobAccountKey;
     var containerName   = config.containerName;
-    var connectionstring= 'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net';
+    var template        = 'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;EndpointSuffix=core.windows.net';
+
+    var connectionstring= util.format(template, accountName, accountKey);
     var blobService     = azure.createBlobService( connectionstring );
 
     blobService.createContainerIfNotExists(containerName, 
@@ -29,10 +33,11 @@ module.exports.uploadImageToBlob = function(image, cb ){
         if(!error){
             blobService.createBlockBlobFromLocalFile(containerName,
                                                 image, 
-                                                image, 
+                                                imageFolder+image, 
                                                 function(error, result, response){
                 if(!error){
-                    evaluateImageUrl();
+                    var url = config.blobStorageURL + image;
+                    cb(null,url);
                 }
             });    
         }
