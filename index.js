@@ -4,7 +4,7 @@ var builder = require('botbuilder');
 //set up server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3991, function () {
-   console.log('%s listening to %s', server.name, server.input); 
+   console.log('%s listening to %s', server.name, server.url); 
 });
 
 //get a token and refresh periodically
@@ -164,9 +164,18 @@ bot.dialog('/moderatePicture', [
         builder.Prompts.text(session, 'Give me a URL to a picture, please.');
     },
     function (session, results){
-        var input = session.message.text;
+        var input = null;
+        var format = '';
+        if (session.message.attachments[0]){
+            format = 'Image';
+            input = session.message.attachments[0];
+        }
+        else{
+            format = 'ImageUrl';
+            input = session.message.text;
+        }
         var cm = require('./moderate.js');
-        cm( 'ImageUrl', input, function(err, body) {
+        cm( format, input, function(err, body) {
             if (err) {
                 console.log('Error: '+err);         
                 session.send('Oops. Something went wrong.');
@@ -234,7 +243,7 @@ bot.dialog('/jobText', [
         var cm = require('./job.js');
         var input = session.message.text;
         cm( "Text", 
-            "ExplicitText", 
+            "deeptextanalytics", 
             input, 
             function(err, body) {
                 if (err) {
