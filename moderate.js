@@ -2,9 +2,9 @@
 var unirest = require('unirest');
 var config = require('./config.json');
 var utils = require('./utils.js');
+var uuid = require('node-uuid');
 
 var baseUrl = 'https://westus.api.cognitive.microsoft.com/contentmoderator/moderate/v1.0/';
-var request = require('request-promise');
 
 module.exports = function(contentType, input, cb) {
     switch (contentType){
@@ -25,21 +25,27 @@ module.exports = function(contentType, input, cb) {
             break;
         }
         case 'Image':{
-            utils.downLoadImage(input.contentUrl, 'tempfile.jpg', function () {
-                unirest.post(baseUrl+'ProcessImage/Evaluate')
-                    .headers({
-                        'content-type': 'image/jpeg',
-                        'Ocp-Apim-Subscription-Key':config.ocp_key, 
-                        'Content-Length': response.length
-                    })
-//                        .attach('picture', unirest.request(input.contentUrl),{ 'knownLength': response.length } )
-//                        .attach({'picture': 'reliability.jpg' })//this gets an image size 400 error
-                    // .attach({'picture': input.contentUrl })
-                    .attach({'picture': "reliability.jpg" })
-                    .end(function (res) {
-                    return cb(res.error, res.body );
+            var ext = input.contentUrl.substr(input.contentUrl.lastIndexOf('.'));
+            var fileName = uuid.v1() +  ext 
+            utils.downLoadImage(input.contentUrl, fileName, function (error) {
+                utils.uploadImageToBlob(fileName, function(error, url){
+                    if (!error){
+                        unirest.post(baseUrl+'ProcessImage/Evaluate')
+                            .type('json')
+                            .headers({
+                                'content-type': 'application/json',
+                                'Ocp-Apim-Subscription-Key':config.ocp_key, 
+                            })
+                            .send({
+                                'DataRepresentation': 'URL',
+                                'Value': url,
+                            })
+                            .end(function (res) {
+                                return cb(res.error, res.body );
+                            });
+                    }
                 });
-            });
+            })
             break;
         }        
         case 'Text':{
